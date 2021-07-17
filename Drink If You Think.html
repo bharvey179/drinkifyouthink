@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<html>
+  
+<head>
+    <title>WetFoxGames</title>
+    
+    <style>
+
+        .fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 100px;
+        right: 0;
+        overflow: auto;
+        background: rgb(190, 190, 190); /* Just to visualize the extent */ 
+        }
+
+        .centerContent {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+
+        .visable {
+            visibility: visable;
+        }
+
+        .button {
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 10px;
+            border-radius: 10px;
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            margin:10px
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        #gameContainer {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        #title {
+            align-self: center;
+            justify-content: center;
+            color: red;
+        }
+
+        #cardHolder {
+            background-color: royalblue;
+        }
+
+        #gameAction {
+            color: seashell;
+            font-size: 75px;
+        }
+        #buttonHolder {
+            padding-top: 25px;
+            bottom: 30px;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            background-color: white;
+        }
+
+        
+
+    </style>
+
+  </head>
+  
+  <body>
+   
+        <div class="centerContent" id="gameContainer">
+            <div id="title" class="centerContent"><h1>DRINK IF YOU THINK</h1></div>
+            <div id="Rules" class="centerContent">
+                <h3>Rules
+                    <ol>
+                        <li>Sit back to back with your partner</li>
+                        <li>Both partners complete the card</li>
+                        <li>If both partners drink. Then it's called a "Double" and both players drink again</li>
+                    </ol>
+                </h3>
+            </div>
+            <div id="cardHolder" class="centerContent button">
+                <div id="gameAction">Click next card below to begin</div>
+            </div>
+        </div>
+        <div id="buttonHolder" class="center">
+            <button id="nextCardButton" class="button" onclick="showNextCard()">Next card</button>
+            <button id="shuffleDeckButton" class="button" onclick="shuffleDeck()">Shuffle deck</button>
+            <button id="fullscreenButton" class="button" onclick=" toggleFullscreen()">Full-screen</button>
+        </div>
+
+  </body>
+  
+  <script>
+
+    var gameActionEle = document.getElementById("gameAction")
+    var nextCardButtonEle = document.getElementById("nextCardButton")
+    var cardHolderEle = document.getElementById("cardHolder")
+    var fullscreenButtonEle = document.getElementById("fullscreenButton")
+
+    var fullscreenOn = false
+
+    var gameDeck = [
+        ["Drink if you think you would win in a fight"],
+        ["Drink if you think you will get married first"],
+        ["Drink if you think you have a better taste in music"],
+        ["Drink if you think your family likes your partner more than you"],
+        ["Drink if you think you have a higher sex drive"],
+        ["Drink if you think your partner farts more than you"],
+        ["Drink if you think your partner can do better than you in dating"],
+        ["Drink if you think your partner talks too much during movies"],
+        ["Drink if you think you like CFA more than your partner"],
+        ["Drink if you think you are shorter"],
+        ["Drink if you think your partner has access to cool drugs"],
+        ["Drink if you think your partner calls their parents more than you"],
+        ["Drink if  you think your partner has a hot sibling"],
+        ["Drink if you think your partner is dating material"],
+        ["Drink if you think your partner skipped breakfast this morning"],
+        ["Drink if you think your partner should get with someone in the room"],
+        ["Drink if you think you know your partner’s political beliefs"],
+        ["Drink if you think you know the last time your partner masturbated"],
+        ["Drink if you think you’ll make more money than your partner"],
+        ["Drink if you think you had a worst freshman roommate"],
+        ["Drink if you think your partner will make a good parent"],
+        ["Drink if you think your partner would refuse to use public bathrooms"],
+        ["Drink if you still use daddy’s credit card at the bar"],
+        ["Drink if you think your partner knows more than one language"],
+        ["Drink if you think your partner has Microsoft word on their resume"],
+        ["Drink if you think your partner refuses to use a condom"],
+        ["Drink if you think your male partner is a head pusher or your female partner uses too much teeth"],
+        ["Drink if you think your partner goes hard on networking"],
+        ["Drink if you think your partner has bigger butt than you"],
+        ["Drink if you think your partner is a serial dater"],
+        ["Drink if you think your partner is suspiciously positive"],
+        ["Drink if you think your partner is a worst driver than you"],
+        ["Drink if you think your partner’s farts smell worse"],
+        ["Drink if you think you are the better cook"],
+        ["Drink if you think your partner"],
+        ["Drink if you think your partner more likely to make the first move"],
+        ["Drink if you think your partner could peer pressure you into getting a tattoo"],
+        ["Drink if you think you are the bigger Taylor Swift fan"],
+        ["Drink if you think you have the cooler job"],
+        ["Drink if you think you are going to masturbate tonight"],
+        ["Drink if you think your partner went through a worse middle school phase"],
+        ["Drink if you think your partner peaked already"],
+        ["Drink if you think your partner is cooler than you"],
+        ["Drink if you think there is a chance your partner gets arrested before year end"],
+        ["Drink if you think you can hold your liquor better"],
+        ["Drink if you think your partner is capable of killing someone"],
+        ["Drink if you think your partner is more likely to get a speeding ticket"],
+        ["Drink if you think your partner puts the milk in before their cereal (consider your life choices if this applies)"],
+        ["Drink if you think your partner has a dirtier mind"],
+        ["Drink if you think your partner would come resume you on the side of the highway at 3 AM"],
+        ["Drink if you think your partner is a wine snob"],
+        ["Drink if you think your partner has thought about you late at night"],
+        ["Drink if you think your partner would date you"],
+        ["Drink if you think your partner carries photo(s) in their wallet"],
+        ["Drink if you think your partner has ever gone skinny dipping"],
+        ["Drink if you think your partner is model material"],
+        ["Drink if you think your partner is more creative"],
+        ["Drink if you think your partner has a better vocabulary"],
+        ["Drink if you think your partner curses more than you"],
+        ["Drink if you think your partner is ill prepared for a pet"],
+        ["Drink if you think your partner frequently goes multiple days without showering"],
+        ["Drink if you think your partner celebrates the crossing of state borders by lifting their feet"],
+        ["Drink if you think your partner is an airplane clapper"],
+        ["Drink if you think your partner is generous tipper"],
+        ["Drink if you think your partner would be a good kisser"],
+        ["Drink if you think your partner would get famous for the wrong reasons"],
+        ["Drink if you think your partner could find the clit"],
+        ["Drink if you think your partner should purchase a sex toy"],
+        ["Drink if you think your partner is vanilla in bed"],
+        ["Drink if you think your partner would accidentally commit tax evasion or fraud"],
+        ["Drink if you think your partner would sell alcohol to under age kids"],
+        ["Drink if you think your partner would share your nudes"],
+        ["Drink if you think your partner would make a good stripper"],
+        ["Drink if you think your partner is circumcised"],
+        ["Drink if you think your partner could use some more religion in their life"],
+        ["Drink if you think your partner would be someone bitch in jail"],
+        ["Drink if you think your partner would have a threesome tonight with you if offered"],
+        ["Drink if you think your partner would tase you if given the chance"],
+        ["Drink if you think your partner think they have a good voice"],
+        ["Drink if you think your partner claims to know an instrument"],
+        ["Drink if you think your partner over pronouncements foreign words"],
+        ["Drink if you think your partner is a Karen or a Chad"],
+        ["Drink if you think your partner would ‘accidentally’ slip it in the wrong hole"],
+        ["Drink if your partner thinks they are smarter than you"],
+        ["Drink if your partner thinks they are at least a 7 out of 10"],
+        ["Drink if you think your partner would make for good player on a reality TV show"],
+        ["Drink if you think your partner would sell their body for a night for the right price"],
+        ["Drink if you think your partner is more competitive than you"],
+        ["Drink if you think your partner is carrying a condom"],
+        ["Drink if you think your partner plans on having unprotected sex tonight"],
+        ["Drink if you think your partner would make you pull over to pick up a stray animal"],
+        ["Drink if you think your partner would give a homeless person their jacket off their back"],
+        ["Drink if you think your partner would accidentally hit an animal with their car and not think twice"],
+        ["Drink if you think your partner had anger issues as a child"],
+        ["Drink if you think your partner was spoiled as a kid"],
+        ["Drink if you think your partner will have more than 2 marriages"],
+        ["Drink if you think your partner would still drink a four loko"],
+        ["Drink if you think your partner never pays anyone back"],
+        ["Drink if you think your partner never does laundry"],
+        ["Drink if you think your partner has a sex playlist"],
+        ["Drink if you think you would survive a 2 week quarantine with your partner"],
+        ["Drink if you think your partner has unknowingly passed and sti"],
+        ["Drink if you think your partner is lower than 30 on the rice purity test"],
+        ["Drink if you think your partner would fake an orgasm"],
+        ["Drink if you think your partner tries to get too deep"],
+        ["Drink if you think your partner can’t hold a conversation"],
+        ["Drink if you think you’re a good gift giver"],
+        ["Drink if you think your partner is an avid shower singer"],
+        ["Drink if you think your partner is able to do a good impersonation"],
+        ["Drink if you think your partner doesn’t know the three branches of government"],
+        ["Drink if you think your partner would forget their anniversary"],
+        ["Drink if you think your partner would lie about their weight on their ID"],
+        ["Drink if you think your partner would get rejected from a bar and try again an hour later"],
+        ["Drink twice if you’re depressed"],
+        ["Drink if you think your partner is good at being fake when they want to be"],
+        ["Drink if you think your partner was a bully in grade school"],
+        ["Drink if you think your partner would be a complainy amputee"],
+        ["Drink if you think your partner would enjoy an occasional finger in the butt"],
+        ["Drink if you think this game is great"],
+        ["Drink if you have ever pooped your pants"],
+        ["Drink if you think your partner is a gym rat"],
+        ["Drink if you think your partner hits on people at the gym"],
+        ["Drink if you think your partner will go to bed before you tonight"],
+        ["Drink if you think it’s Shot ‘o’clock"],
+        ["Drink if you think you should sleep alone tonight"],
+        ["Drink if you think smart watches are dumb"],
+        ["Drink if you think your partner would ever get a mani pedi"],
+        ["Drink if you think your partner would make out with gum in their mouth"],
+        ["Drink if you think your partner would not wash their hands after peeing"],
+        ["Drink if you think your partner would be a good stay at home parents"],
+        ["Drink if you think your partner was too into high school sports"],
+        ["Drink if you think your partner will throw up tonight"],
+        ["Drink if you claim to never have blacked out before, and then take a shot"],
+        ["Drink if you still like uncrustables"],
+        ["Drink if you think your partner prefers the lights off during sexy time"],
+        ["Drink if you think your partner still thinks about their ex"],
+        ["Drink if you think your partner hasn’t dated anyone since high school"],
+        ["Drink if you think your partner is emotionally unavailable"],
+        ["Drink if you think your partner would be a simp"],
+        ["Drink if you think your partner is more of a giver than a taker"],
+        ["Drink if you think you care too much about brands"],
+        ["Drink if you think your partner hasn’t gotten laid in over a year"],
+        ["Drink if you think your partner doesn’t like someone in this room"],
+        ["Drink if you won’t shut up about your love life"],
+        ["Drink if you’re an open book"],
+        ["Drink if you think your partner is a Disney adult"],
+        ["Drink if you think your partner gets their memes from Facebook"],
+        ["Drink if you think your partner shares too much on their stories"],
+        ["Drink if you think your partner is sporting a full bush"],
+        ["Drink if you think your partner is way too into the stock market, take two if you think they still have Robinhood"],
+        ["Drink if you think your partner beloved in Santa passed the age of 10"],
+        ["Drink if you think your partner doesn’t believe in evolution"],
+        ["Drink if you think your partner has a small bladder"],
+        ["Drink if you think your partner can’t drink as much as they used to"],
+        ["Drink if you showed up late tonight"],
+        ["Drink if you think your partner would let Elon Musk put it in the butt for a Tesla"],
+        ["Drink if you think your partner sleeps naked"],
+        ["Drink if you think your partner ruined their ex"],
+        ["Drink if you think your partner would fake cry to get out of a speeding ticket"],
+        ["Drink if you think your partner would “borrow” someone else’s food out of their work fridge"],
+        ["Drink if you think your partner doesn’t believe in pants on zoom calls"],
+        ["Drink if you think your partner didn’t vote in the presidential election"],
+        ["Drink if you think your partner is a selfish lover"],
+        ["Drink if you think your partner is a walking rom com"],
+        ["Drink if you believe in aliens"],
+        ["Drink if you think your partner wants to go home"],
+        ["Drink if you think your partner could bring someone home without trying"],
+        ["Drink if you think your partner smells their hands after scratching their privates"],
+        ["Drink if you think your partner is currently leasing someone on"],
+        ["Drink if you think your partner doesn’t wash in between their cheeks in the shower"],
+        ["Drink if you think your partner would not stay awake with you on a road trip"],
+        ["Drink if you think your partner should have majored in something else in college"],
+        ["Drink if you think your partner complains more than you"],
+        ["Drink if you think your partner’s go to exit strategy is ghosting"],
+        ["Drink if you think your partner would send pictures of their poop to people"],
+        ["Drink if you think your partner watches too much tik-tok"],
+        ["Drink if you think your partner is typically a liability when they go out"],
+        ["Drink if you think your partner is a cock block"],
+        ["Drink if you think your partner brags too much about their thrift finds"],
+        ["Drink if you think your partner always has to play a game when they drink"],
+        ["Drink if you think your partner isn’t sharing their drugs with you"],
+        ["Drink if you want your partner to buy you a drink tonight"],
+        ["Drink if you DON’T think your partner can throw it back"],
+        ["Drink if you think your partner is a huge flirt"],
+        ["Drink if you think your partner would sell their souls to corporate America"],
+        ["Drink if you have trust issues"],
+        ["Drink if you think your partner would be the one to throw hands at a bar"],
+        ["Drink if you know who Alexis Texas is"],
+        ["Drink if you think you could peer pressure your partner into texting their ex tonight"],
+        ["Drink if you think your partner was an accident"],
+        ["Drink if you think you know the difference between an atomic and nuclear bomb"],
+        ["Drink if you think your partner has offended someone in this room"],
+        ["Drink if you think your partner would treat their dog like a child"],
+        ["Drink if you think your partner has never seen a ginger boy naked"],
+        ["Drink if you think your partner would take mirror selfies for the snap"],
+        ["Drink if you think your partner uses humor to mask their feelings"],
+        ["Drink if you think your partner uses negging to flirt too much"],
+        ["Drink if you think your partner would shoot their shot at a funeral"],
+        ["Drink if you think your partner would fuss about flying on Spirit Airlines"],
+        ["Drink if you’re partner always has a party trick their sleeve"],
+        ["Drink if your partner is over critical about everything"],
+        ["Drink if you would let your partner give you a kiss"],
+        ["Drink if your partner unknowingly has a catchphrase"]
+        ]
+
+    var index = 0
+
+    function showNextCard() {
+
+        gameActionEle.innerHTML = gameDeck[index]
+        index += 1
+        
+        if (gameDeck.length < index) {
+            gameActionEle.innerHTML = "Play again by shuffling"
+            nextCardButtonEle.className = "hidden"
+        }
+    }
+
+    function shuffleDeck() {
+        index = 0
+        gameActionEle.innerHTML = gameDeck[index]
+        nextCardButtonEle.className = "visable button"
+        
+        gameDeck.sort(sortFunc)
+        
+        var sortFunc = (card1, card2) => {
+            var result
+
+            if (Math.random() > .5) {
+            result = 1
+            } else {
+            result = -1
+            }
+
+            return result
+        }
+        console.log(gameDeck)
+    }
+
+    function toggleFullscreen() {
+            cardHolderEle.classList.toggle("fullscreen")
+    }
+  </script>
+
+</html>
